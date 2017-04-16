@@ -146,7 +146,8 @@ let g:UltiSnipsExpandTrigger="<A-8>"
 let g:UltiSnipsListSnippets="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-let g:UltiSnipsSnippetDirectories=['UltiSnips','C:\Users\we.taper\Desktop\Draft\UltiSnips']
+    " Add an self defined folder for own Snippets. [optional]
+" let g:UltiSnipsSnippetDirectories=['UltiSnips','C:\Users\we.taper\Desktop\Draft\UltiSnips']
 " If you want :UltiSnipsEdit to split your window.
     let g:UltiSnipsEditSplit="vertical"
 
@@ -181,10 +182,9 @@ let g:neocomplete#sources#omni#input_patterns.tex =
 set expandtab
 set tabstop=4
 set shiftwidth=4
-" Change color
-" colorscheme desert
+" Change color [recommanded]
 " set background=light
-colorscheme Atelier_SulphurpoolDark
+" colorscheme Atelier_SulphurpoolDark
 " Displaying line numbers.
 set number
 " ... and display them relative to the current position of cursor
@@ -192,11 +192,11 @@ set relativenumber
 " Always show one more line on top or bottum, so that the editing
 " experience is more continuous.
 set scrolloff=1
-" Change the font to a more favorable one:Anonymous_Pro 
+" Change the font to a more favorable one:Anonymous_Pro  [optional]
 " (from: http://www.marksimonson.com/fonts/view/anonymous-pro)
-if has('gui_running')
-    set guifont=Anonymous_Pro:h11:cANSI:qDRAFT
-endif
+" if has('gui_running')
+"     set guifont=Anonymous_Pro:h11:cANSI:qDRAFT
+" endif
 
 " ================================================================
 " @4 Miscellaneous Settings
