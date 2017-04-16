@@ -1,0 +1,233 @@
+" ============================================================
+" Vimrc. Author: WE.TapEr Version: 1.2
+" For setting up Vim and Vimtex on Mac.
+"
+" ============================================================
+"                   An Outline for this Vimrc
+" ============================================================
+" @2 Plugins (For various plugins)
+"   @2.1 For Vundle
+"   @2.2 For vimtex
+"   @2.3 For UltiSnips
+"   @2.4 For Neocomplete
+"   @
+" @3 Vim UI Configuration (Adjusting the appearance of Vim, 
+"                           specifically, the gVim)
+" @4 Miscellaneous Settings 
+" ================================================================
+" @1 The Default Settings
+set nocompatible
+"
+" ================================================================
+"  @2  Plugins 
+" ================================================================
+
+" ================================================================
+" @2.1 Below is for Vundle -- The Vim plugin manager
+"
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+" with modification shown in: https://github.com/VundleVim/Vundle.vim/wiki/Vundle-for-Windows
+set rtp+=~/.vim/bundle/Vundle.vim/
+call vundle#begin('~/.vim/bundle/')
+" alternatively, pass a path where Vundle should install plugins
+" call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+Plugin 'lervag/vimtex'
+Plugin 'Shougo/neocomplete.vim'
+Plugin 'Konfekt/FastFold'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'godlygeek/tabular'
+Plugin 'morhetz/gruvbox'
+Plugin 'atelierbram/vim-colors_atelier-schemes'
+" =====================================================================
+" Below is for Ultisnips only
+"
+    " Track the engine.
+    Plugin 'SirVer/ultisnips'
+    " Snippets are separated from the engine. Add this if you want them:
+    Plugin 'honza/vim-snippets'
+
+" plugin from http://vim-scripts.org/vim/scripts.html
+" Plugin 'L9'
+" Git plugin not hosted on GitHub
+" Plugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+" Plugin 'file:///home/gmarik/path/to/plugin'
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Install L9 and avoid a Naming conflict if you've already installed a
+" different version somewhere else.
+" Plugin 'ascenator/L9', {'name': 'newL9'}
+
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :help vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+" 
+" ======================================================================
+
+
+" =============================================================
+" @2.2 For vimtex
+" 1. Enable SumatrPDF reader to view the output pdf
+let g:vimtex_view_general_viewer
+      \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+let g:vimtex_view_general_options = '-r @line @pdf @tex'
+
+" This adds a callback hook that updates Skim after compilation
+let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
+function! UpdateSkim(status)
+  if !a:status | return | endif
+
+  let l:out = b:vimtex.out()
+  let l:tex = expand('%:p')
+  let l:cmd = [g:vimtex_view_general_viewer, '-r']
+  if !empty(system('pgrep Skim'))
+    call extend(l:cmd, ['-g'])
+  endif
+  if has('nvim')
+    call jobstart(l:cmd + [line('.'), l:out, l:tex])
+  elseif has('job')
+    call job_start(l:cmd + [line('.'), l:out, l:tex])
+  else
+    call system(join(l:cmd + [line('.'), shellescape(l:out), shellescape(l:tex)], ' '))
+  endif
+endfunction
+
+" 2. Enable the keyboard shortcuts.
+let maplocalleader = ","
+" 3. Enable TeX-specific code folding.
+let g:vimtex_fold_enabled=1
+" let g:vimtex_fold_manual=0
+" 4. Ignore certain Latex warnings
+let g:vimtex_quickfix_ignored_warnings = [
+    \ 'Overfull',
+    \ 'Underfull',
+	\ 'PDF inclusion',
+  \ ]
+
+
+" =====================================================================
+" @2.3 Below is also for UltiSnips
+" 
+    " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+    " Use command+8 to trigger the snippets for Mac, or you many
+    " change it to other more favorable ones.
+let g:UltiSnipsExpandTrigger="<D-8>"
+let g:UltiSnipsListSnippets="<c-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" Add your own directory for your own snippets. [optional]
+" let g:UltiSnipsSnippetDirectories=['UltiSnips','~\somewhere\your\snippets\goes']
+"
+" UltiSnipsEdit
+"
+" You can open a private snippet definition file for the current
+" filetype by typing the :UltiSnipsEdit command.  If no snippet file
+" exists, a new file is created. If used as UltiSnipsEdit! all public
+" snippet files are taken into account too. If multiple files match
+" the search, the user gets to choose the file.
+" 
+" If you want :UltiSnipsEdit to split your window.
+    let g:UltiSnipsEditSplit="vertical"
+
+" =====================================================================
+" @2.4 Below is also for Neocomplete
+" 
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" Below is for neocomplete for cooperate with vimtex plugin
+if !exists('g:neocomplete#sources#omni#input_patterns')
+let g:neocomplete#sources#omni#input_patterns = {}
+endif
+let g:neocomplete#sources#omni#input_patterns.tex =
+    \ '\v\\%('
+    \ . '\a*cite\a*%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+    \ . '|\a*ref%(\s*\{[^}]*|range\s*\{[^,}]*%(}\{)?)'
+    \ . '|hyperref\s*\[[^]]*'
+    \ . '|includegraphics\*?%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+    \ . '|%(include%(only)?|input)\s*\{[^}]*'
+    \ . '|\a*(gls|Gls|GLS)(pl)?\a*%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+    \ . '|includepdf%(\s*\[[^]]*\])?\s*\{[^}]*'
+    \ . '|includestandalone%(\s*\[[^]]*\])?\s*\{[^}]*'
+    \ . ')'
+
+" =====================================================================
+" @3 Vim UI Configuration
+" 
+" Highlight search items, even when typing the searched terms
+" This is enabled by default on gVim (Windows), but not on MacVim.
+set incsearch
+set hlsearch
+" Replace <tab> with 4 spaces
+set expandtab
+set tabstop=4
+set shiftwidth=4
+" Change color [optional, recommanded]
+" set background=dark
+" colorscheme Atelier_SulphurpoolDark
+" Displaying line numbers.
+set number
+" ... and display them relative to the current position of cursor
+set relativenumber
+" Always show one more line on top or bottum, so that the editing
+" experience is more continuous.
+set scrolloff=1
+" Change the font [optional]
+" Change the font to a more favorable one:Anonymous_Pro 
+" (from: http://www.marksimonson.com/fonts/view/anonymous-pro)
+" if has('gui_running')
+"     set guifont=Anonymous_Pro:h11:cANSI:qDRAFT
+" endif
+
+" ================================================================
+" @4 Miscellaneous Settings
+"
+" Change default encoding to utf-8
+set encoding=utf-8
+" Making 'j' and 'k' work on visual line
+nnoremap k gk
+nnoremap j gj
+nnoremap gk k
+nnoremap gj j
+" Making 'Shift-tab' to back-indentation
+inoremap <S-tab> <C-d>
+" Since '^' is more convenient than '0', exchange their roles
+nnoremap ^ 0
+nnoremap 0 ^
+" For convenient Case search
+set ignorecase
+set smartcase
+" For avoiding the \"~\" file clustering on my system
+set backupdir-=.
+set backupdir^=~/vim-backup-file
+" For avoiding the \"un~\" file clustering on my system
+set noundofile
+" When Vim is split in Mac's screen, the best textwidth is 80
+" Change this according to your needs
+set textwidth=80
+" Search for visually selected text using key combination '//' 
+vnoremap // y/<C-R>"<CR>
