@@ -109,11 +109,10 @@ let maplocalleader = ","
 let g:vimtex_fold_enabled=1
 " let g:vimtex_fold_manual=0
 " 4. Ignore certain Latex warnings
-let g:vimtex_quickfix_ignored_warnings = [
-    \ 'Overfull',
-    \ 'Underfull',
-	\ 'PDF inclusion',
-  \ ]
+ let g:vimtex_quickfix_latexlog = {
+        \ 'overfull' : 0,
+        \ 'underfull' : 0,
+        \}
 
 " Clearing useless files when Vim quite, using Vimtex-clean
 augroup CleaningDirtyTexFiles
